@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .student {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .stars-container {
+            display: flex;
+            gap: 5px;
+        }
+        .star {
+            font-size: 30px;
+            color: lightgray;
+            background: linear-gradient(to right, gold 0%, gold 0%, lightgray 0%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: background 0.3s ease-in-out;
+        }
+        button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .decrease {
+            background: #dc3545;
+        }
+        .decrease:hover {
+            background: #a71d2a;
+        }
+        .marks{
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Student Performance Tracker</h1>
+    <div class="container" id="studentList"></div>
+
+    <script>
+        const students = [
+            { name: "Ritu", marks: 0 },
+            { name: "Chetna", marks: 0 },
+            { name: "Dharmendra", marks: 0 },
+            { name: "Tejil", marks: 0 },
+            { name: "Jayesh", marks: 0 },
+            { name: "Prem", marks: 0 },
+            { name: "Suryabhan", marks: 0 },
+            { name: "Suraj", marks: 0 },
+            { name: "Riya", marks: 0 },
+            { name: "Hanzalah", marks: 0 },
+            { name: "Virendra", marks: 0 },
+            { name: "Ramroop", marks: 0 },
+            { name: "Sameer", marks: 0 },
+            { name: "Rohit", marks: 0 },
+            { name: "Uday", marks: 0 },
+        ];
+
+        function saveToLocalStorage() {
+            localStorage.setItem("students", JSON.stringify(students));
+        }
+
+        function loadFromLocalStorage() {
+            const storedData = localStorage.getItem("students");
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                parsedData.forEach((student, index) => {
+                    students[index].marks = student.marks;
+                });
+            }
+        }
+
+        function updateStars(student, starContainer) {
+            let marks = student.marks;
+            let starsHTML = "";
+
+            for (let i = 0; i < 5; i++) {
+                let percentage = Math.min(100, Math.max(0, ((marks - i * 20) / 20) * 100));
+                if (marks < i * 20) percentage = 0;
+
+                starsHTML += `
+                    <span class="star" style="
+                        background: linear-gradient(to right, gold ${percentage}%, lightgray ${percentage}%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    ">★</span>
+                `;
+            }
+
+            starContainer.innerHTML = starsHTML;
+        }
+
+        function changeMarks(index, value) {
+            students[index].marks = Math.min(100, Math.max(0, students[index].marks + value));
+            let studentDiv = document.getElementById(`student-${index}`);
+            let starContainer = studentDiv.querySelector(".stars-container");
+            let marksDisplay = studentDiv.querySelector(".marks");
+
+            updateStars(students[index], starContainer);
+            marksDisplay.textContent = ` ${students[index].marks}`;
+            saveToLocalStorage();
+        }
+
+        function loadStudents() {
+            loadFromLocalStorage();
+            const studentList = document.getElementById("studentList");
+            studentList.innerHTML = "";
+
+            students.forEach((student, index) => {
+                let studentDiv = document.createElement("div");
+                studentDiv.classList.add("student");
+                studentDiv.id = `student-${index}`;
+
+                studentDiv.innerHTML = `
+                    <span>${student.name} <span class="marks">    ${student.marks}</span></span>
+                    <span class="stars-container"></span>
+                    <button onclick="changeMarks(${index}, 1)">+1 Mark</button>
+                    <button class="decrease" onclick="changeMarks(${index}, -1)">-1 Mark</button>
+                `;
+
+                studentList.appendChild(studentDiv);
+                updateStars(student, studentDiv.querySelector(".stars-container"));
+            });
+        }
+
+        loadStudents();
+    </script>
+
+</body>
+</html>
