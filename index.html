@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Performance Tracker</title>
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f4f4f4;
@@ -23,14 +23,25 @@
         }
         .student {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #ddd;
+        }
+        .student-name {
+            flex-grow: 1;
+            text-align: left;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding-right: 10px;
         }
         .stars-container {
             display: flex;
             gap: 5px;
+            min-width: 120px;
+            justify-content: center;
+            margin-right: 15% !important;
         }
         .star {
             font-size: 30px;
@@ -143,7 +154,7 @@
                 studentDiv.id = `student-${index}`;
 
                 studentDiv.innerHTML = `
-                    <span>${student.name} <span class="marks">    ${student.marks}</span></span>
+                    <span class="student-name">${student.name} <span class="marks">    ${student.marks}</span></span>
                     <span class="stars-container"></span>
                     <button onclick="changeMarks(${index}, 1)">+1 Mark</button>
                     <button class="decrease" onclick="changeMarks(${index}, -1)">-1 Mark</button>
